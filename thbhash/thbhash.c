@@ -12,6 +12,9 @@
 #include "hboo.ch"
 #include "hbinit.h"
 
+HB_FUNC( __GETMESSAGE );
+HB_FUNC( __CLSADDMSG );
+
 #define _GETHASH0() hb_arrayGetPtr( hb_stackSelfItem(), 1 )
 #define _GETHASH1( pSelf ) hb_arrayGetPtr( (pSelf), 1 )
 
@@ -282,19 +285,19 @@ static void THBHASH_END( void )
 
 //-----------------------------------------------------------------------------
 
-HB_FUNC_STATIC( THBHASH_ONERROR )
+HB_FUNC_STATIC( __THBHASH_ONERROR )
 {
 	PHB_ITEM pKey;
 	char *szKey;
 
-	hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName( "__GETMESSAGE" ) ) );
+	hb_vmPushDynSym( hb_dynsymGet( "__GETMESSAGE" ) );
 	hb_vmPushNil();
 	hb_vmProc( 0 );
 
 	pKey = hb_stackReturnItem();
 	szKey = hb_itemGetC( pKey );
 
-	if( szKey [ 0 ] == '_' )	// SET
+	if( szKey[ 0 ] == '_' )	// SET
 	{
 		hb_itemPutC( pKey, szKey + 1 );
 		hb_hashAdd( _GETHASH0(), pKey, hb_param( 1, HB_IT_ANY ) );
@@ -314,8 +317,6 @@ HB_FUNC_STATIC( THBHASH_ONERROR )
 
 static void addMethods( HB_USHORT usClassH )
 {
-	static HB_SYMB symOnError = { "ONERROR", { HB_FS_STATIC }, { HB_FUNCNAME( THBHASH_ONERROR ) }, NULL };
-
 	// Data hash
 	hb_clsAdd( usClassH, "_HASH", THBHASH_SETHASH );
 	hb_clsAdd( usClassH, "HASH", THBHASH_GETHASH );
@@ -346,11 +347,11 @@ static void addMethods( HB_USHORT usClassH )
 	hb_clsAdd( usClassH, "END", THBHASH_END );
 
 	// Añade el metodo ONERROR como gestor de errores de la clase
-	hb_vmPushSymbol( hb_dynsymFindSymbol( "__CLSADDMSG" ) );
+	hb_vmPushDynSym( hb_dynsymGet( "__CLSADDMSG" ) );
 	hb_vmPushNil();
 	hb_vmPushInteger( usClassH );
 	hb_vmPushString( "ONERROR", strlen( "ONERROR" ) );
-	hb_vmPushSymbol( &symOnError );
+	hb_vmPushDynSym( hb_dynsymGet( "__THBHASH_ONERROR" ) );
 	hb_vmPushInteger( HB_OO_MSG_ONERROR );
 	hb_vmProc( 4 );
 }
@@ -381,9 +382,10 @@ HB_FUNC( THBHASH )
 //=============================================================================
 
 HB_INIT_SYMBOLS_BEGIN( THBHASH__InitSymbols )
-{
-	"THBHASH", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( THBHASH ) }, NULL
-}
+{ "THBHASH", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( THBHASH ) }, NULL },
+{ "__GETMESSAGE", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __GETMESSAGE ) }, NULL },
+{ "__CLSADDMSG", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __CLSADDMSG ) }, NULL },
+{ "__THBHASH_ONERROR", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __THBHASH_ONERROR ) }, NULL }
 HB_INIT_SYMBOLS_END( THBPGPP__InitSymbols )
 
 #if defined( HB_PRAGMA_STARTUP )
@@ -394,3 +396,4 @@ HB_INIT_SYMBOLS_END( THBPGPP__InitSymbols )
 #endif
 
 //-----------------------------------------------------------------------------
+
