@@ -18,7 +18,8 @@ procedure main
     ? "valtype( h ) => ", valtype( h ) , " | "
     ?? "valtype( h:getHash() ) => ", valtype( h:getHash() ) 
 
-    ? Replicate( "-", MaxCol() )
+    raya()
+
     ? "List of Methods:"
     ? hb_valtoexp( __objGetMethodList( h ) )
 
@@ -30,21 +31,28 @@ procedure main
     h:cAuthor := "Manu Exposito"
     ? "Author: ", h:cAuthor, "Key con mayusculas y minusculas:", h:cAuThOr
     h:cAuthor := "Yo Exposito"
+    
+    raya()
 
+    h:hash[ "colaborador" ] := "Riztan"
+    ah := h:hash // ah := h:getHash()
+    ? h:hash[ "colaborador" ], h:colaborador, h:get( "colaborador" ), ah[ "colaborador" ]
+    
     para()
 
     h:key1 := { 1, 2, 3, 4 }
-    h:add( "key11", {|| alert("Fin!") } )
+    h:add( "key11", { || alert( "Fin!" ) } )
 
     raya()
 
-    ? "Delete key10.            =>  h:del( 'key10' )   => ", h:del( "key10" )
-    ? "Scan the key5            =>  h:scan( 'key5' )   => ", hb_ntos( h:scan( "key5" ) ), "( Return position key5 ) "
-    ? "Value in position 6      =>  h:valueAt( 6 )     => ", hb_valtoexp( h:valueAt( 6 ) )
-    ? "Is defined 'key8'?       =>  h:hasKey( 'key8' ) => ", h:hasKey( "key8" )
-    ? "Is not defined 'key0'?   =>  h:hasKey( 'key0' ) => ", h:hasKey( "key0" )
+    ? "Delete key10.           =>  h:del( 'key10' )    => ", h:del( "key10" )
+    ? "Scan the key5           =>  h:scan( 'key5' )    => ", hb_ntos( h:scan( "key5" ) ), "( Return position key5 ) "
+    ? "Value in position 6     =>  h:valueAt( 6 )      => ", hb_valtoexp( h:valueAt( 6 ) )
+    ? "Is defined 'key8'?      =>  h:hasKey( 'key8' )  => ", h:hasKey( "key8" )
+    ? "Is not defined 'key10'? =>  h:hasKey( 'key10' ) => ", h:hasKey( "key10" )
 
-    ? Replicate( "-", MaxCol() )
+    raya()
+
     ? "Number of elements:", hb_ntos( h:len() )
 
     ? "Keys:" 
@@ -53,7 +61,6 @@ procedure main
     ? hb_valtoexp( h:values() ) 
 
     para()
-
     raya()
 
     aKeys := h:Keys()
@@ -88,7 +95,7 @@ static procedure para( n )
     endif
     ?
     raya()
-    ? "presiona una tecla o espera " + hb_ntoc( n ) + " segundos..."
+    ? "Presiona una tecla o espera " + hb_ntoc( n ) + " segundos..."
     inkey( n )
 
 return

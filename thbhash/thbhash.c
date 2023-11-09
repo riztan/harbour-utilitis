@@ -285,7 +285,7 @@ static void THBHASH_END( void )
 
 //-----------------------------------------------------------------------------
 
-HB_FUNC_STATIC( __THBHASH_ONERROR )
+static void THBHASH_ONERROR( void )
 {
 	PHB_ITEM pKey;
 	char *szKey;
@@ -310,6 +310,20 @@ HB_FUNC_STATIC( __THBHASH_ONERROR )
 	}
 
 	hb_xfree( szKey );
+}
+
+//-----------------------------------------------------------------------------
+// Añade una metodo usando __CLSADDMSG() de alto nivel en C
+
+void hb_AddMsg( HB_USHORT usClassH, const char *szMessage, const char *szFuncName, HB_USHORT nType )
+{
+	hb_vmPushDynSym( hb_dynsymGet( "__CLSADDMSG" ) );
+	hb_vmPushNil();
+	hb_vmPushInteger( usClassH );
+	hb_vmPushString( szMessage, strlen( szMessage ) );
+	hb_vmPushDynSym( hb_dynsymGet( szFuncName ) );
+	hb_vmPushInteger( nType );
+	hb_vmProc( 4 );
 }
 
 //-----------------------------------------------------------------------------
@@ -345,15 +359,8 @@ static void addMethods( HB_USHORT usClassH )
 	hb_clsAdd( usClassH, "GETFLAGS", THBHASH_GETFLAGS );
 	hb_clsAdd( usClassH, "CLEARFLAGS", THBHASH_CLEARFLAGS );
 	hb_clsAdd( usClassH, "END", THBHASH_END );
-
 	// Añade el metodo ONERROR como gestor de errores de la clase
-	hb_vmPushDynSym( hb_dynsymGet( "__CLSADDMSG" ) );
-	hb_vmPushNil();
-	hb_vmPushInteger( usClassH );
-	hb_vmPushString( "ONERROR", strlen( "ONERROR" ) );
-	hb_vmPushDynSym( hb_dynsymGet( "__THBHASH_ONERROR" ) );
-	hb_vmPushInteger( HB_OO_MSG_ONERROR );
-	hb_vmProc( 4 );
+	hb_AddMsg( usClassH, "ONERROR", "THBHASH_ONERROR", HB_OO_MSG_ONERROR );
 }
 
 //-----------------------------------------------------------------------------
@@ -385,7 +392,7 @@ HB_INIT_SYMBOLS_BEGIN( THBHASH__InitSymbols )
 { "THBHASH", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( THBHASH ) }, NULL },
 { "__GETMESSAGE", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __GETMESSAGE ) }, NULL },
 { "__CLSADDMSG", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __CLSADDMSG ) }, NULL },
-{ "__THBHASH_ONERROR", { HB_FS_PUBLIC | HB_FS_LOCAL }, { HB_FUNCNAME( __THBHASH_ONERROR ) }, NULL }
+{ "THBHASH_ONERROR", { HB_FS_PUBLIC | HB_FS_LOCAL }, { THBHASH_ONERROR }, NULL }
 HB_INIT_SYMBOLS_END( THBPGPP__InitSymbols )
 
 #if defined( HB_PRAGMA_STARTUP )
@@ -396,4 +403,3 @@ HB_INIT_SYMBOLS_END( THBPGPP__InitSymbols )
 #endif
 
 //-----------------------------------------------------------------------------
-

@@ -29,6 +29,9 @@ procedure main
 
     h:autor := "Manu Exposito"
     ? h:autor, h:get( "autor" )
+
+    h:hash[ "colaborador" ] := "Riztan"
+    ? h:hash[ "colaborador" ], h:colaborador, h:get( "colaborador" )
     
     ? "------------------------------------------------------"
     ? "Keys:" 
