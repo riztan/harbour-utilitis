@@ -1,0 +1,10 @@
+description=THBArray class for manipulating arrays as objects.
+
+cpp=yes
+incpaths=.
+
+headers=hbobject.ch ${hb_name}
+
+libs=${_HB_DYNPREF}${hb_name}${_HB_DYNSUFF}
+
+prgflags=-n -w3 -es2 -kmo -i-

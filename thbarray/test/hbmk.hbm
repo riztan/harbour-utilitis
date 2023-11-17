@@ -1,0 +1,5 @@
+thbarray.hbc
+-cpp=yes
+-w3 -es2
+
+-L../ -lthbarray

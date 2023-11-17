@@ -1,0 +1,14 @@
+-cpp=yes
+-hblib
+-inc
+
+-o${hb_targetname}
+-workdir=${hb_work}/${hb_plat}/${hb_comp}/${hb_targetname}
+
+-w3 -es2
+
+-iflag={bcc}-a
+
+thbarray.cpp
+
+
